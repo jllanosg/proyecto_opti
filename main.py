@@ -33,7 +33,7 @@ X_minHorasNM = norm(20,4)
 #print(presupuesto)
 
 for i in range(cantProyectos):
-    rand = round(X_minHoras.rvs(),2)
+    rand = round(X_minHoras.rvs(),1)
 
     # Para respetar el intervalo [400,800]
 
@@ -49,7 +49,7 @@ for i in range(cantPersonas):
     for j in range(cantProyectos):
         # Se agregan valores aleatorios
         # Para respetar el intervalo [8,32]
-        rand = round(X_minHorasNM.rvs(),2)
+        rand = round(X_minHorasNM.rvs(),1)
         if rand < 8:
             minHoras[i].append(8)
         elif rand > 32:
@@ -131,7 +131,6 @@ for i in range(cantProyectos):
         else:
             funcionObjetivo+=f" + {minHoras[j][i]}*X_{str(i)}_{str(j)}"
 funcionObjetivo+=";"
-print(funcionObjetivo)
 
 ###########################
 ### Creando archivo txt ###
