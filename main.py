@@ -22,13 +22,26 @@ costosHora = []
 
 # Distribuciones normales para valores aleatorios
 
-X_minHoras = norm(70,5)
+# minimo de horas para completar el proyecto
+a_minhoras = 70
+b_minhoras = 5
+X_minHoras = norm(a_minhoras,b_minhoras)
 
-# minimo de horas en un proyecto
-X_minHorasNM = norm(20,4)
+# minimo de horas en un proyecto por persona
 
-X_presupuesto = norm(1200,400)
-X_persona = norm(1.5,0.5)
+a_minhorasNM =20
+b_minhorasNM =4
+X_minHorasNM = norm(a_minhorasNM,b_minhorasNM)
+
+# presupuesto maximo
+a_presupuesto = 90
+b_presupuesto = 5
+X_presupuesto = norm(a_presupuesto,b_presupuesto)
+
+# costo por persona por proyecto por hora
+a_persona = 1.5
+b_persona = 0.5
+X_persona = norm(a_persona,b_persona)
 
 #####################################
 ### GENERACION VALORES ALEATORIOS ###
@@ -53,10 +66,10 @@ for i in range(cantProyectos):
     rand = round(X_presupuesto.rvs(),2)
 
     # Para respetar el intervalo [140,2400]
-    if rand < 140:
-        presupuesto.append(140)
-    elif rand > 2400:
-        presupuesto.append(2400)
+    if rand < 75:
+        presupuesto.append(75)
+    elif rand > 105:
+        presupuesto.append(105)
     else:
         presupuesto.append(rand)
 
@@ -143,7 +156,7 @@ for i in range(cantPersonas):
             string += "X_"+str(j)+"_"+str(i)+" + "
             string2 += f"{minHoras[i][j] }* X_{j}_{i} +"
     string += " <= 5;"
-    string2 += " <= 160;"
+    string2 += " <= 80;"
     restMaxProyectos.append(string)
     restMaxHoras.append(string2)
 
