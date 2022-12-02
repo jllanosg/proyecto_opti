@@ -18,6 +18,7 @@ minHorasProyectoTotal = []
 
 # Matriz NxM 
 minHoras = []
+costosHora = []
 
 # Distribuciones normales para valores aleatorios
 
@@ -26,14 +27,43 @@ X_minHoras = norm(70,5)
 # minimo de horas en un proyecto
 X_minHorasNM = norm(20,4)
 
+X_presupuesto = norm(1200,400)
+X_persona = norm(1.5,0.5)
+
 #####################################
 ### GENERACION VALORES ALEATORIOS ###
 #####################################
 
+for i in range(cantPersonas):
+    costosHora.append([])
+    for j in range(cantProyectos):
+
+        # Se agregan valores aleatorios
+        # Para respetar el intervalo [1,3]
+        rand = round(X_persona.rvs(),2)
+        if rand < 1:
+            costosHora[i].append(1)
+        elif rand > 3:
+            costosHora[i].append(3)
+        else:
+            costosHora[i].append(rand)
+
+
+for i in range(cantProyectos):
+    rand = round(X_presupuesto.rvs(),2)
+
+    # Para respetar el intervalo [140,2400]
+    if rand < 140:
+        presupuesto.append(140)
+    elif rand > 2400:
+        presupuesto.append(2400)
+    else:
+        presupuesto.append(rand)
+
 #print(presupuesto)
 
 for i in range(cantProyectos):
-    rand = round(X_minHoras.rvs(),1)
+    rand = round(X_minHoras.rvs(),2)
 
     # Para respetar el intervalo [400,800]
 
@@ -69,20 +99,26 @@ for i in range(cantPersonas):
 
 restMaxEmpleados = [] # Ejemplo: ['X_0_0 + X_1_0 + X_2_0 + X_3_0 + X_4_0 <= 5', 'X_0_1 + X_1_1 + X_2_1 + X_3_1 + X_4_1 <= 5']
 restMinHoras = [] # Ejemplo: ['H_0_0 + H_0_1 + H_0_2 + H_0_3 + H_0_4 >=701.59;', 'H_1_0 + H_1_1 + H_1_2 + H_1_3 + H_1_4 >=493.55;', ...]
-
+restPresupuesto = []
 
 for j in range(cantProyectos):
+    string1=""
     string2 = ""
     string3 = ""
     for i in range(cantPersonas):
         if i == cantPersonas-1:
+            string1 += f"{round(costosHora[i][j]*minHoras[i][j],2)} * X_{j}_{i}"
             string2 += "X_"+str(j)+"_"+str(i)
             string3 += f"{minHoras[i][j]} * X_" + str(j) + "_"+str(i)
         else:
+            string1 += f"{round(costosHora[i][j]*minHoras[i][j],2)} * X_{j}_{i} + "
             string2 += "X_"+str(j)+"_"+str(i)+" + "
             string3 += f"{minHoras[i][j]} * X_" + str(j) + "_"+str(i) + "+"
+            
+    string1 += f"<= {presupuesto[j]};"
     string2 += " <= 5;"
     string3 += " >= "+ str(minHorasProyectoTotal[j]) +";"
+    restPresupuesto.append(string1)
     restMaxEmpleados.append(string2)
     restMinHoras.append(string3)
 
@@ -94,7 +130,9 @@ for j in range(cantProyectos):
 restMaxProyectos = [] # Ejemplo: ['X_0_0 + X_0_1 + X_0_2 + X_0_3 + X_0_4 + X_0_5<= 5', 'X_1_0 + X_1_1 + X_1_2 + X_1_3 + X_1_4 + X_1_5<= 5', ...]
 restMaxHoras = []
 
+
 for i in range(cantPersonas):
+    string1 = ""
     string = ""
     string2 = ""
     for j in range(cantProyectos):
@@ -142,8 +180,8 @@ archivo = open(nameTxt+".lp", "w")
 
 archivo.write(funcionObjetivo+"\n"+"\n")
 
-#for item in restPresupuesto:
- #   archivo.write(item+"\n")
+for item in restPresupuesto:
+    archivo.write(item+"\n")
 
 for item in restMaxEmpleados:
     archivo.write(item+"\n")
@@ -159,7 +197,6 @@ for item in restMaxProyectos:
 
 for item in restMaxHoras:
     archivo.write(item+"\n")
-
 
 
 archivo.write(restBinarias+"\n")
